@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
 def index(request):
@@ -15,13 +14,26 @@ def pricing_view(request):
     return render(request, 'pricing.html')
 
 def cars_view(request):
-    return render(request, 'cars.html')
+    return render(request, 'car.html')
 
 def blog_view(request):
     return render(request, 'blog.html')
 
+from .forms import ContactForm
+
+
 def contact_view(request):
-    return render(request, 'contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')  # Redirect to the index page
+    else:
+        form = ContactForm()
+    
+    context = {'form': form}
+    return render(request, 'contact.html', context)
+
 
 def login_view(request):
     if request.method == 'POST':
